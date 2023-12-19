@@ -13122,6 +13122,22 @@ div#notebook {
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Project-Overview">Project Overview<a class="anchor-link" href="#Project-Overview">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Sparkify</strong> is a fictional music streaming service platform created by Udacity just like Spotify and Pandora. Users can stream songs with either free or premium subscription (monthly flat rate is charged) using Sparkify, and they can upgrade, downgrade or cancel their service at anytime. All these user interactions with platform are logged as event data such as page visited, date and time, users details, sessions details, etc.</p>
+<p>When it comes to machine learning on large dataset, <strong>Spark MLlib (Machine Learning library)</strong> is a popular choise for distributed computing, in-memory processing, scalability and ease of use. In Capstone Project, we will manipulate a smaller subset of users event dataset using Apache Spark to build a machine learning model for predicting churn rates in Sparkify plaform.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
@@ -13206,12 +13222,20 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's examane the schema and dimension of the dataset.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># display the schema of dataframe</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the schema of dataframe</span>
 <span class="n">user_log</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 
@@ -13262,6 +13286,46 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get dimension of dataset - number of rows and columns</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Count of records: {user_log.count()}, number of columns: {len(user_log.columns)}&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Count of records: 286500, number of columns: 18
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Overall, there are 286500 rows of records in this small dataset with a total of 18 columns. All columns can be nullable and most columns are string data type like <code>userId</code>, <code>userAgent</code>, <code>location</code>, <code>gender</code>, etc. capturing user interaction details. Some are integer and floating-point data type such as <code>registration</code>, <code>time</code>, <code>length</code> which requires data transformation for analysis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># take a look at first 5 rows of records</span>
 <span class="n">user_log</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
@@ -13276,7 +13340,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[5]:</div>
+    <div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -13297,7 +13361,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># generate descriptive statistics for userId</span>
@@ -13336,81 +13400,6 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># generate descriptive statistic for sessionId</span>
-<span class="n">user_log</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;sessionId&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------------+
-|summary|        sessionId|
-+-------+-----------------+
-|  count|           286500|
-|   mean|1041.526554973822|
-| stddev|726.7762634630799|
-|    min|                1|
-|    max|             2474|
-+-------+-----------------+
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get number of rows of records in dataset</span>
-<span class="n">user_log</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[8]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>286500</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13428,7 +13417,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Check for missing value - NaN and &#39;&#39; for each column</span>
@@ -13482,7 +13471,7 @@ userId = 8346
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># drop drop NaN and &#39;&#39; (empty strings) for userId column</span>
@@ -13503,7 +13492,7 @@ userId = 8346
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt output_prompt">Out[9]:</div>
 
 
 
@@ -13520,11 +13509,14 @@ userId = 8346
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Re-examine if missing values are clean up</span>
 <span class="n">check_missing_value</span><span class="p">(</span><span class="n">user_log_valid</span><span class="p">)</span>
+
+<span class="c1"># Count number of rows in dataset after cleaning</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;After cleaning, there are {user_log_valid.count()} rows of records.&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13544,6 +13536,7 @@ userId = 8346
 <pre>artist = 50046
 length = 50046
 song = 50046
+After cleaning, there are 278154 rows of records.
 </pre>
 </div>
 </div>
@@ -13555,6 +13548,14 @@ song = 50046
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>There is a high number of records with NaNs in <code>artist</code>, <code>length</code> and <code>song</code> variable, we should not remove it as it represents other user interactions which are not related to playing songs like visiting Home page, adding friends, etc.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Convert-Timestamp-from-Epoch-to-Date-Time">Convert Timestamp from Epoch to Date Time<a class="anchor-link" href="#Convert-Timestamp-from-Epoch-to-Date-Time">&#182;</a></h3><p>Now we have clean up missing values for userId and there isn't any NaN or empty string found in sessionId. Next, let's transform <code>ts</code> and <code>registration</code> into datetime format to improve readability by adding 2 new columns into dataset.</p>
 
 </div>
@@ -13562,7 +13563,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># User Defined Function</span>
@@ -13577,7 +13578,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># add new variable - datetime (a string representing date and time)</span>
@@ -13591,7 +13592,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># add new variable - registration (a string representing date and time)</span>
@@ -13605,7 +13606,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># User Defined Function</span>
@@ -13639,7 +13640,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Extract keyword from userAgent variable and map it to respective browser name</span>
@@ -13667,7 +13668,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;browser&quot;</span><span class="p">,</span> <span class="n">get_browser</span><span class="p">(</span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">userAgent</span><span class="p">))</span>
@@ -13680,7 +13681,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define a UDF to extract and map the platform</span>
@@ -13710,7 +13711,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;platform&quot;</span><span class="p">,</span> <span class="n">get_platform</span><span class="p">(</span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">userAgent</span><span class="p">))</span>
@@ -13730,7 +13731,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create UDF to get weekday</span>
@@ -13744,7 +13745,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;weekday&#39;</span><span class="p">,</span> <span class="n">get_weekday</span><span class="p">(</span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">ts</span><span class="p">))</span>
@@ -13764,7 +13765,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;city&#39;</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getItem</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>              
@@ -13777,7 +13778,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getItem</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -13790,7 +13791,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -13806,7 +13807,7 @@ song = 50046
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[24]:</div>
+    <div class="prompt output_prompt">Out[23]:</div>
 
 
 
@@ -13831,7 +13832,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create a temporary view for sql queries</span>
@@ -13853,7 +13854,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gender_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT gender, COUNT(DISTINCT userId) as user_count </span><span class="se">\</span>
@@ -13912,7 +13913,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT level, COUNT(DISTINCT userId) as user_count </span><span class="se">\</span>
@@ -14021,7 +14022,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT auth, COUNT(DISTINCT userId) as user_count</span><span class="se">\</span>
@@ -14068,7 +14069,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT page, COUNT(DISTINCT userId) as user_count </span><span class="se">\</span>
@@ -14115,7 +14116,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_cancelled</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT userId, auth, datetime, days_of_subscription </span><span class="se">\</span>
@@ -14138,7 +14139,7 @@ song = 50046
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[31]:</div>
+    <div class="prompt output_prompt">Out[29]:</div>
 
 
 
@@ -14177,7 +14178,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">flag_churn_event</span> <span class="o">=</span> <span class="n">udf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;Cancellation Confirmation&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">())</span>
@@ -14190,7 +14191,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;churn_event&quot;</span><span class="p">,</span> <span class="n">flag_churn_event</span><span class="p">(</span><span class="s2">&quot;page&quot;</span><span class="p">))</span>
@@ -14210,7 +14211,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">flag_downgrade_event</span> <span class="o">=</span> <span class="n">udf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;Submit Downgrade&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">())</span>
@@ -14223,7 +14224,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;downgraded&quot;</span><span class="p">,</span> <span class="n">flag_downgrade_event</span><span class="p">(</span><span class="s2">&quot;page&quot;</span><span class="p">))</span>
@@ -14236,7 +14237,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_valid</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14252,7 +14253,7 @@ song = 50046
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[36]:</div>
+    <div class="prompt output_prompt">Out[34]:</div>
 
 
 
@@ -14277,7 +14278,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">windowval</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;userId&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">rangeBetween</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">unboundedPreceding</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -14290,7 +14291,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_churn</span> <span class="o">=</span> <span class="n">user_log_valid</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;churn&quot;</span><span class="p">,</span> <span class="n">Fmax</span><span class="p">(</span><span class="s2">&quot;churn_event&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">windowval</span><span class="p">))</span>
@@ -14303,7 +14304,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_churn</span> <span class="o">=</span> <span class="n">user_log_churn</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="n">Fsum</span><span class="p">(</span><span class="s2">&quot;downgraded&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">windowval</span><span class="p">))</span>
@@ -14316,7 +14317,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_churn</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14332,7 +14333,7 @@ song = 50046
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[40]:</div>
+    <div class="prompt output_prompt">Out[38]:</div>
 
 
 
@@ -14357,7 +14358,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Update temporary view</span>
@@ -14371,7 +14372,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get subscription period for active &amp; churn users</span>
@@ -14415,7 +14416,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get distribution of active &amp; churn users by phase</span>
@@ -14468,7 +14469,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gender_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, gender, COUNT(DISTINCT userId) AS user_count </span><span class="se">\</span>
@@ -14486,7 +14487,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Map index values in unstacked_gender to more descriptive labels</span>
@@ -14501,7 +14502,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set plot labels and title</span>
@@ -14549,7 +14550,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_churn</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">([</span><span class="s1">&#39;userId&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;churn&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;churn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -14574,8 +14575,8 @@ song = 50046
 +-----+------+-----+
 |    0|     F|   84|
 |    0|     M|   89|
-|    1|     F|   20|
 |    1|     M|   32|
+|    1|     F|   20|
 +-----+------+-----+
 
 </pre>
@@ -14588,7 +14589,7 @@ song = 50046
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">stat</span><span class="p">,</span> <span class="n">pval</span> <span class="o">=</span> <span class="n">proportions_ztest</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span><span class="mi">20</span><span class="p">],[</span><span class="mi">121</span><span class="p">,</span><span class="mi">104</span><span class="p">],</span><span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
@@ -14637,7 +14638,7 @@ p-value for z-test = 0.20051086855629463
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, AVG(length), MAX(length) as max_length, MIN(length) as min_length</span><span class="se">\</span>
@@ -14692,7 +14693,7 @@ p-value for z-test = 0.20051086855629463
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, level, COUNT(DISTINCT userId) as user_count </span><span class="se">\</span>
@@ -14734,7 +14735,7 @@ p-value for z-test = 0.20051086855629463
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">stat</span><span class="p">,</span> <span class="n">pval</span> <span class="o">=</span> <span class="n">proportions_ztest</span><span class="p">([</span><span class="mi">46</span><span class="p">,</span><span class="mi">36</span><span class="p">],[(</span><span class="mi">46</span><span class="o">+</span><span class="mi">149</span><span class="p">),</span> <span class="p">(</span><span class="mi">36</span><span class="o">+</span><span class="mi">129</span><span class="p">)],</span><span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
@@ -14783,7 +14784,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Extract count of events by page for churn user into a dataframe</span>
@@ -14801,7 +14802,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">churn_page_count</span> <span class="o">=</span> <span class="n">churn_page_count</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_count&quot;</span><span class="p">:</span> <span class="s2">&quot;churn users&quot;</span><span class="p">})</span>
@@ -14814,7 +14815,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">churn_page_count</span> <span class="o">=</span> <span class="n">churn_page_count</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">)</span>
@@ -14827,7 +14828,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Extract count of events by page for active user into a dataframe</span>
@@ -14845,7 +14846,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">active_page_count</span> <span class="o">=</span> <span class="n">active_page_count</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_count&quot;</span><span class="p">:</span> <span class="s2">&quot;active users&quot;</span><span class="p">})</span>
@@ -14858,7 +14859,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[55]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">active_page_count</span> <span class="o">=</span> <span class="n">active_page_count</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">)</span>
@@ -14871,7 +14872,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="prompt input_prompt">In&nbsp;[56]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Combine number of events by page for active users and churn users into common dataframe for visualization purpose</span>
@@ -14893,7 +14894,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">page_count</span> <span class="o">=</span> <span class="n">page_count</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;NextSong&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;churn users&#39;</span><span class="p">,</span> <span class="s1">&#39;active users&#39;</span><span class="p">,</span> <span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -14906,7 +14907,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set plot labels and title</span>
@@ -14968,7 +14969,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">browser_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, browser, COUNT(DISTINCT userId) AS user_count </span><span class="se">\</span>
@@ -14986,7 +14987,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Map index values in unstacked_browser to more descriptive labels</span>
@@ -15001,7 +15002,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set plot labels and title</span>
@@ -15064,7 +15065,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">platform_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, platform, COUNT(DISTINCT userId) AS user_count </span><span class="se">\</span>
@@ -15086,7 +15087,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set plot labels and title</span>
@@ -15149,7 +15150,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">weekday_churn</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT weekday, COUNT(*) AS churn_user </span><span class="se">\</span>
@@ -15166,7 +15167,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">weekday_active</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT weekday, COUNT(*) AS active_user </span><span class="se">\</span>
@@ -15183,7 +15184,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">weekday_churn</span> <span class="o">=</span> <span class="n">weekday_churn</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;weekday&#39;</span><span class="p">)</span>
@@ -15198,7 +15199,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[69]:</div>
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Weekday as a decimal number, where 0 is Sunday and 6 is Saturday.</span>
@@ -15213,7 +15214,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="prompt input_prompt">In&nbsp;[68]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;User Interactions by Day of Week&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -15261,7 +15262,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="prompt input_prompt">In&nbsp;[69]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">state_churn</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT state, COUNT(DISTINCT userId) AS churn_users </span><span class="se">\</span>
@@ -15278,7 +15279,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">state_active</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT state, COUNT(DISTINCT userId) AS active_users </span><span class="se">\</span>
@@ -15295,7 +15296,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[73]:</div>
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">state_churn</span> <span class="o">=</span> <span class="n">state_churn</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">)</span>
@@ -15313,7 +15314,7 @@ p-value for z-test = 0.689646294328303
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[74]:</div>
+<div class="prompt input_prompt">In&nbsp;[72]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Churn Rate by Location (State)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
@@ -15383,7 +15384,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[75]:</div>
+<div class="prompt input_prompt">In&nbsp;[73]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">artist_count</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT churn, COUNT(DISTINCT artist) AS artist_count </span><span class="se">\</span>
@@ -15399,7 +15400,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[76]:</div>
+<div class="prompt input_prompt">In&nbsp;[74]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Map index values in unstacked_browser to more descriptive labels</span>
@@ -15414,7 +15415,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[77]:</div>
+<div class="prompt input_prompt">In&nbsp;[75]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
@@ -15468,7 +15469,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[78]:</div>
+<div class="prompt input_prompt">In&nbsp;[76]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">user_log_churn</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;churn_log_table&quot;</span><span class="p">)</span>
@@ -15503,7 +15504,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[79]:</div>
+<div class="prompt input_prompt">In&nbsp;[77]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT userId, </span><span class="se">\</span>
@@ -15541,7 +15542,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[80]:</div>
+<div class="prompt input_prompt">In&nbsp;[78]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">features</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;feature_engineering&quot;</span><span class="p">)</span>
@@ -15554,7 +15555,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[81]:</div>
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
@@ -15567,7 +15568,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[82]:</div>
+<div class="prompt input_prompt">In&nbsp;[80]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Check any column with null values in the dataframe to </span>
@@ -15599,7 +15600,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[83]:</div>
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_features</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -15615,7 +15616,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[83]:</div>
+    <div class="prompt output_prompt">Out[81]:</div>
 
 
 
@@ -15868,7 +15869,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[84]:</div>
+<div class="prompt input_prompt">In&nbsp;[82]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">25</span><span class="p">))</span>
@@ -15926,13 +15927,13 @@ However, the data shows all users in the following states churn out of Sparkify.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Split-the-data-into-train-and-test-subsets">Split the data into train and test subsets<a class="anchor-link" href="#Split-the-data-into-train-and-test-subsets">&#182;</a></h3>
+<h3 id="Step-1:-Split-the-data-into-train-and-test-subsets">Step 1: Split the data into train and test subsets<a class="anchor-link" href="#Step-1:-Split-the-data-into-train-and-test-subsets">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="prompt input_prompt">In&nbsp;[83]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
@@ -15943,9 +15944,23 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-2:-Transform-features-in-pipeline-and-build-model">Step 2: Transform features in pipeline and build model<a class="anchor-link" href="#Step-2:-Transform-features-in-pipeline-and-build-model">&#182;</a></h3><ol>
+<li>Create a feature vector assembler that combines a given list of selected features into a single vector columns. </li>
+<li>Create a standard scaler to normalize each feature of my model to have unit standard deviation and zero mean.</li>
+<li>Create a classifier with chosen algorithm</li>
+<li>Create a pipeline with the specified stages: VectorAssembler, Normalizer, and the classifier</li>
+<li>Create a cross validator with pipeline and hyperparameter grid</li>
+</ol>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[86]:</div>
+<div class="prompt input_prompt">In&nbsp;[84]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_col_names</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
@@ -15976,7 +15991,7 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[87]:</div>
+<div class="prompt input_prompt">In&nbsp;[85]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_model</span> <span class="p">(</span><span class="n">classifier</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
@@ -15991,7 +16006,6 @@ However, the data shows all users in the following states churn out of Sparkify.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Define a VectorAssembler to combine input features into a single vector column</span>
     <span class="n">assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span> <span class="o">=</span> <span class="n">get_col_names</span><span class="p">(</span><span class="n">features</span><span class="p">),</span> <span class="n">outputCol</span> <span class="o">=</span> <span class="s1">&#39;input_features&#39;</span><span class="p">)</span>
-    <span class="c1">#assembler = VectorAssembler(inputCols = feature_columns, outputCol = &#39;input_features&#39;)</span>
     
     <span class="c1"># Define a Normalizer to scale the input features</span>
     <span class="n">scaler</span> <span class="o">=</span> <span class="n">Normalizer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;input_features&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;scaled_features&quot;</span><span class="p">)</span>
@@ -16015,9 +16029,17 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-3:-Train-Model">Step 3: Train Model<a class="anchor-link" href="#Step-3:-Train-Model">&#182;</a></h3><p>Train the machine learning model built in previous step by fitting the model with test data, and run cross-validation to find the best set of parameters</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[88]:</div>
+<div class="prompt input_prompt">In&nbsp;[86]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">classifier_name</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
@@ -16053,9 +16075,33 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Metrics-Used-for-Model-Performance-Evaluation">Metrics Used for Model Performance Evaluation<a class="anchor-link" href="#Metrics-Used-for-Model-Performance-Evaluation">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="F1-Score">F1 Score<a class="anchor-link" href="#F1-Score">&#182;</a></h3><p>It is a metric commonly used in machine learning model to evaluate the performance of a model. It is particularly useful when dealing with imbalanced datasets where one class significantly outnumbers the other. In this project, we have high number of active users vs churned users with uneven distribution of gender, location, and interactions with platform. The F1 score combines precision and recall into a single metric, providing a balance between these two important aspects of a classification model's performance.</p>
+<p><strong>Precision</strong> - Number of True Positives / Number of True Positives + False Positives</p>
+<p><em>Precision tells us how many of the positive predictions made by the model are actually correct. In other words, it measures the accuracy of the model when it predicts something as positive. A high precision means that the model is making fewer false positive errors.</em></p>
+<p><strong>Recall</strong> - Number of True Positives / Number of True Positives + False Negatives</p>
+<p><em>Recall tells us how many of the actual positive instances in the data were correctly predicted as positive by the model. It measures the model's ability to find all the positive instances. A high recall means that the model is making fewer false negative errors.</em></p>
+<h3 id="Accuracy">Accuracy<a class="anchor-link" href="#Accuracy">&#182;</a></h3><p>The Accuracy is commonly used to measure the overall correctness of a model's predictions.</p>
+<p><strong>Accuracy</strong> = Number of Correct Predictions / Total number of Predictions</p>
+<p>For binary classification, accuracy can also be calculated in terms of positives and negatives as follows:</p>
+<p>Accuracy = ( TP + TN ) / ( TP + TN + FP + FN )</p>
+<p>Where TP = True Positives, TN = True Negatives, FP = False Positives, and FN = False Negatives</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[89]:</div>
+<div class="prompt input_prompt">In&nbsp;[87]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_model_metrics</span> <span class="p">(</span><span class="n">train_model</span><span class="p">,</span> <span class="n">classifier_name</span><span class="p">):</span>
@@ -16080,9 +16126,21 @@ However, the data shows all users in the following states churn out of Sparkify.
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-5:-Make-Predictions">Step 5: Make Predictions<a class="anchor-link" href="#Step-5:-Make-Predictions">&#182;</a></h3><ol>
+<li>Make predictions on the test set</li>
+<li>Evaluate the model using metrics like Precision, Recall and Accuracy.</li>
+<li>Retrieve F1 score</li>
+</ol>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[90]:</div>
+<div class="prompt input_prompt">In&nbsp;[88]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">predict_data</span> <span class="p">(</span><span class="n">fit_model</span><span class="p">,</span> <span class="n">classifier_name</span><span class="p">):</span>
@@ -16119,13 +16177,14 @@ However, the data shows all users in the following states churn out of Sparkify.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Logistic-Regression-Model">Logistic Regression Model<a class="anchor-link" href="#Logistic-Regression-Model">&#182;</a></h2>
+<h2 id="Logistic-Regression-(LR)">Logistic Regression (LR)<a class="anchor-link" href="#Logistic-Regression-(LR)">&#182;</a></h2><p>Logistic Regression algorithm is widely used for binary classificiation task where target variable has two classes (e.g., yes/no, positive/negative). In this case, we want to predict user stay or churn. Hence, we started first prediction using Logistic Regression model.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="prompt input_prompt">In&nbsp;[89]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Logistic Regression</span>
@@ -16149,8 +16208,8 @@ However, the data shows all users in the following states churn out of Sparkify.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Logistic Regression model fitting took 1037.3778183460236 seconds
-AvgMetrics: [0.7112469411889324]
+<pre>Logistic Regression model fitting took 1084.8365597724915 seconds
+AvgMetrics: [0.73720874732512]
 </pre>
 </div>
 </div>
@@ -16161,7 +16220,7 @@ AvgMetrics: [0.7112469411889324]
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[92]:</div>
+<div class="prompt input_prompt">In&nbsp;[90]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Make prediction using a trained Logistic Regression model</span>
@@ -16197,7 +16256,16 @@ Logistic Regression f1: 0.7797160243407708
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Gradient-boosted-Tree-Classifier">Gradient-boosted Tree Classifier<a class="anchor-link" href="#Gradient-boosted-Tree-Classifier">&#182;</a></h2>
+<p>With default parameters, the Logistic Regression model scores high accuracy of 0.8235 and f1 score of 0.7797. Let's compare this model with Gradient-Boosted Tree classifier which is also known for high predictive accuracy.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gradient-boosted-Tree-(GBT)">Gradient-boosted Tree (GBT)<a class="anchor-link" href="#Gradient-boosted-Tree-(GBT)">&#182;</a></h2><p>GBT can handle imbalanced datasets (churn prediction problems often involve imbalanced classes) by adjusting the learning process to focus on the minority class. It has mechanisms, such as regularization and tree depth control, that help prevent overfitting.</p>
+
 </div>
 </div>
 </div>
@@ -16275,7 +16343,24 @@ Gradient-Boosted Tree f1: 0.7338935574229692
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Random-Forest-Classifier">Random Forest Classifier<a class="anchor-link" href="#Random-Forest-Classifier">&#182;</a></h2>
+<p>Gradient-Boosted Tree models takes slightly longer training time compared to Logistic Regression model with slightly lower accuracy and f1 score with default parameters as below:</p>
+<ul>
+<li>maximum number of iteractios = 20</li>
+<li>maximum depth of each decision tree = 5</li>
+<li>low stepSize (learning rate) = 0.1</li>
+<li>maximum number of bins used for discretizing continuous features = 5</li>
+<li>minimum number of instances each leaf node must have = 1 </li>
+</ul>
+<p>Let's try Random Forest Classifier which is famous for easy to use and less prone to overfitting compared to individual decision trees.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Random-Forest-Classifier-(RFC)">Random Forest Classifier (RFC)<a class="anchor-link" href="#Random-Forest-Classifier-(RFC)">&#182;</a></h2><p>Churn prediction problems often involve non-linear relationships and complex interactions between features. By aggregating predictions from multiple trees, the model can capture complex relationships and patterns in the data, making it effective for identifying potential churners.</p>
+
 </div>
 </div>
 </div>
@@ -16353,7 +16438,16 @@ Random Forest Classifier f1: 0.6627450980392157
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Linear-Support-Vector-Machine">Linear Support Vector Machine<a class="anchor-link" href="#Linear-Support-Vector-Machine">&#182;</a></h2>
+<p>Random Forest Classifier took shorter training time compared to previous 2 models with similar accuracy of 0.7647 as Gradient-Boosted Tree classifier with lower f1 score. It is possible that some features are not contributing significantly to the model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Linear-Support-Vector-Machine">Linear Support Vector Machine<a class="anchor-link" href="#Linear-Support-Vector-Machine">&#182;</a></h2><p>It is a binary classification algorithm, making it suitable for churn prediction where the task is often framed as predicting whether a customer will churn (binary outcome: churn or not). SVMs are less sensitive to outliers compared to certain other models.</p>
+
 </div>
 </div>
 </div>
@@ -16431,7 +16525,15 @@ Linear Support Vector f1: 0.7262656475019387
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Feature-Importances">Feature Importances<a class="anchor-link" href="#Feature-Importances">&#182;</a></h2><p>Feature importances in the context of machine learning represents the importance of the corresponding feature in the dataset. Features with positive higher values are considered more important in making predictions.</p>
+<p>Although Linear Support Vector Machine provides high accuracy of 0.7941 and high f1 score of 0.7262 which is almost equivalent to Gradient-Boosted Tree classifier, the total time taken to fit data to this model is too high, making it not a good choice of algorithm for churn prediction in this project.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Feature-Importances">Feature Importances<a class="anchor-link" href="#Feature-Importances">&#182;</a></h2><p>Feature importances in the context of machine learning represents the importance of the corresponding feature in the dataset. Features with positive higher values are considered more important in making predictions. Let's look at the feature importances of the best Logistic Regression model.</p>
 
 </div>
 </div>
