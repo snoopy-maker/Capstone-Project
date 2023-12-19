@@ -37,24 +37,30 @@ You may analyze full dataset (12GB, avaliable at Udacity Amazon s3 bucket: s3n:/
 5. Predict churn and evaluate performance by comparing 4 MLlib classification models (Logistic regression, Random Forest classifier, Gradient-boosted tree classifier, Linear Support Vector Machine)
   
 ## Results
-At first, we perform prediction by running all models with default parameters and obtain the following result. F1 scores for all models are relatively close, between 0.648 and 0.756.
+At first, we perform prediction by running all models with default parameters and obtain the following result. F1 scores for all models are relatively close, between 0.7262 and 0.7797.
 
 | Model Name                        | Accuracy | F1-score | Training Time(s) |
 | ----------------------------------| -------- |----------| ---------------- |
-| Logistic Regression               | 0.7353   | 0.6867   | 1057             |
-| Gradient-boosted Tree Classifier  | 0.7647   | 0.7647   | 1547             |
-| Random Forest Classifier          | 0.7059   | 0.6673   | 589              |
-| Linear Support Vector             | 0.7353   | 0.6867   | 3894             |
+| Logistic Regression               | 0.8235   | 0.7797   | 1037             |
+| Gradient-boosted Tree Classifier  | 0.7339   | 0.7647   | 1587             |
+| Random Forest Classifier          | 0.6627   | 0.7647   | 588              |
+| Linear Support Vector             | 0.7941   | 0.7262   | 3774             |
 
-Obviously, GBT (Gradient-Boosted Tree) Classifier achieves the best performance, with an accuracy of 0.7941 and a F1-Score of 0.7564 although it takes slightly longer time to train the model compared to Logistic Regression and Random Forest Classifier. We decided to execute hyperparameter tuning for this model.
+Obviously, Logistic Regression model achieves the best performance, with an accuracy of 0.8235 and a F1-Score of 0.7797 although it takes slightly longer time  about 1037 seconds to train the model compared to Random Forest Classifier. We did a hyperparameter tuning by performing a grid search with different values for the following parameters with the hope of improving accuracy and F1-score.
 
-The following is the final evaluation result of tuned GBT model. 
+* regParam(0.01, 0.1, 1.0)
+* elasticNetParam (0.0, 0.5, 1.0)
+* maxIter (10, 20, 30)
 
-| Model Name                        | Accuracy | F1-score | Training Time(s) |
-| ----------------------------------| -------- |----------| ---------------- | 
-| Gradient-boosted Tree Classifier  | 0.7941   | 0.7564   | 1366             |
+Unfortunately, the accurancy and F1-score reduced to 0.7647 and 0.7062 after lowering maxIter from 100 to 30  as the model may not have enough iterations to converge to the optimal set of coefficients. In addition, the running cost of this tuned model increased significantly with triple training time compared to initial model.  Hence, we conclude that we should stick to its default parametes while building Logistic Regression model for this small dataset.
 
-More details of analysis can be found at the post available [here]().
+The following is the final evaluation result of tuned Logistic Regression model. 
+
+| Model Name              | Accuracy | F1-score | Training Time(s) |
+| ------------------------| -------- |----------| ---------------- | 
+| Logistic Regression     | 0.7647   | 0.7062   | 3242             |
+
+More details of analysis can be found at the post available [here](https://medium.com/@swetling.chan/sparkify-user-churn-prediction-model-064b3afdc33c).
 
 ## Acknowledgements
 I would like to express my sincere gratitude to Udacity for the data to complete this educational project.
